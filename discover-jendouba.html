@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discover Jendouba – Digital Booklet &amp; Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#f6cfdc; --desk2:#fbe3ec; --paper:#fff3f6; --paper2:#fde6ee;
+  --ink:#4a2434; --muted:#855a6c; --rose:#d9587f; --rose-d:#b93d65; --sage:#6fa586; --sage-d:#3f7a5a;
+  --ok:#2f9e5e; --okbg:#dcf5e5; --bad:#d3414d; --badbg:#fde0e2;
+  --hand:'Kalam','Segoe Print','Bradley Hand',cursive;
+  --body:'Mulish','Segoe UI',system-ui,sans-serif;
+  --P:340px; --H:480px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);line-height:1.6;min-height:100vh;
+  background:
+   radial-gradient(circle at 15% 10%,#fff4f8 0,transparent 40%),
+   radial-gradient(circle at 90% 85%,#f9c3d6 0,transparent 45%),
+   var(--desk);}
+:focus-visible{outline:3px solid var(--sage-d);outline-offset:3px;border-radius:6px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;max-width:1000px;margin:0 auto;padding:1.2rem 1.2rem 0}
+.brand{font-family:var(--hand);font-weight:700;font-size:1.5rem;color:var(--rose-d)}
+nav a{font-weight:700;color:var(--ink);text-decoration:none;padding:.4rem .9rem;border-radius:99px;margin-left:.2rem}
+nav a:hover{background:#ffffffaa}
+section{max-width:1000px;margin:0 auto;padding:2rem 1.2rem}
+h2.sec{font-family:var(--hand);font-size:clamp(2rem,5vw,2.8rem);line-height:1.15;color:var(--ink)}
+.lead{color:var(--muted);max-width:56ch;margin:.4rem 0 1.2rem}
+
+/* ---------- BOOKLET ---------- */
+.stage{position:relative;overflow:hidden;padding:0}
+.scaler{width:calc(var(--P)*2);height:var(--H);margin:0 auto;transform-origin:top center;perspective:2400px}
+.book{position:relative;width:100%;height:100%;transition:transform .9s cubic-bezier(.5,.1,.2,1);transform-style:preserve-3d}
+.book::before{content:"";position:absolute;left:5%;right:5%;bottom:-26px;height:34px;background:radial-gradient(ellipse at center,#7a2a4a55,transparent 70%);filter:blur(4px)}
+.leaf{position:absolute;top:0;left:50%;width:var(--P);height:var(--H);transform-origin:left center;transform-style:preserve-3d;
+  transition:transform 1s cubic-bezier(.55,.05,.25,1)}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;padding:30px 28px 26px;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 31px,#f0b9ca33 31px 32px),
+    radial-gradient(circle at 20% 15%,#fffafb,transparent 60%),var(--paper);
+  box-shadow:0 2px 0 #e7a9bd,0 10px 30px #8a2d5a2e}
+.face.front{border-radius:3px 12px 12px 3px}
+.face.back{transform:rotateY(180deg);border-radius:12px 3px 3px 12px}
+.face.front::after{content:"";position:absolute;inset:0 auto 0 0;width:26px;background:linear-gradient(90deg,#c9718f33,transparent);pointer-events:none}
+.face.back::after{content:"";position:absolute;inset:0 0 0 auto;width:26px;background:linear-gradient(270deg,#c9718f33,transparent);pointer-events:none}
+.face.cover{background:
+    radial-gradient(circle at 80% 8%,#ffffffaa,transparent 40%),
+    linear-gradient(160deg,#f7b6cc,#f4a3bd);color:#4a1730}
+.face.cover::before{content:"";position:absolute;inset:12px;border:2px dashed #fff8;border-radius:8px;pointer-events:none}
+h3.pt{font-family:var(--hand);font-weight:700;font-size:1.9rem;line-height:1.1;color:var(--rose-d);transform:rotate(-1.5deg);margin-bottom:.7rem}
+.face p{font-size:.95rem;line-height:1.7;color:var(--ink)}
+.pnum{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:var(--hand);color:var(--muted);font-size:.9rem}
+.squig{display:block;width:120px;height:10px;margin:.2rem 0 1rem}
+.cover h1{font-family:var(--hand);font-weight:700;font-size:3rem;line-height:.95;margin-top:1.4rem;transform:rotate(-3deg);color:#fff;text-shadow:3px 3px 0 #c64a73}
+.cover .sub{font-family:var(--hand);font-size:1.15rem;margin-top:.9rem;transform:rotate(-1deg);color:#5a1d38}
+.photos{position:absolute;left:24px;right:24px;bottom:30px;display:flex;gap:12px;justify-content:center}
+.photo{position:relative;width:48%;aspect-ratio:3/4;background:var(--paper);padding:6px 6px 24px;box-shadow:0 6px 14px #7a2a4a40;transform:rotate(-4deg)}
+.photo:nth-child(2){transform:rotate(3.5deg);margin-top:18px}
+.photo .img{height:100%;border:2px dashed #d9a0b5;background:var(--img,none) center/cover,linear-gradient(#e8f3ec,#cfe7d8);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.photo .img svg{width:100%;height:auto;display:block}
+.photo figcaption{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-family:var(--hand);font-size:.85rem;color:var(--ink)}
+.photo::before{content:"";position:absolute;top:-9px;left:50%;width:52px;height:18px;margin-left:-26px;background:#ffe9a8bb;transform:rotate(-4deg)}
+.tip{display:inline-block;margin-top:.6rem;background:var(--paper2);border-left:4px solid var(--sage);padding:.5rem .8rem;border-radius:0 10px 10px 0;font-size:.85rem;color:var(--muted)}
+.todo{list-style:none;margin-top:1rem;display:grid;gap:.4rem}
+.todo li{font-family:var(--hand);font-size:1.05rem;display:flex;gap:.5rem;align-items:center}
+.todo li::before{content:"✿";color:var(--sage-d)}
+.qr{width:120px;height:120px;margin:.4rem auto 0;padding:8px;background:#fff;border:2px dashed var(--rose);border-radius:8px}
+.qrcap{text-align:center;font-family:var(--hand);font-size:.9rem;color:var(--muted)}
+.team{margin-top:.8rem;list-style:none;display:grid;gap:.15rem;font-family:var(--hand);font-size:1.08rem}
+.team li{padding-left:.2rem;border-bottom:1px dotted #d9a0b5}
+.hint{position:absolute;right:12px;bottom:12px;font-family:var(--hand);font-size:.85rem;color:#fff;background:var(--rose);padding:.1rem .6rem;border-radius:99px;pointer-events:none}
+.leaf{cursor:pointer}
+.controls{display:flex;justify-content:center;align-items:center;gap:1rem;margin-top:1.8rem;flex-wrap:wrap}
+.btn{font-family:var(--hand);font-weight:700;font-size:1.1rem;border:2px solid var(--rose-d);background:var(--rose);color:#fff;padding:.45rem 1.3rem;border-radius:99px;cursor:pointer;box-shadow:0 4px 0 var(--rose-d);transition:transform .12s,box-shadow .12s}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--rose-d)}
+.btn:disabled{opacity:.4;cursor:default;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--rose-d)}
+.dots{display:flex;gap:.5rem}
+.dots button{width:14px;height:14px;border-radius:50%;border:2px solid var(--rose-d);background:#fff;cursor:pointer;padding:0}
+.dots button[aria-current="true"]{background:var(--rose-d)}
+.label{text-align:center;font-family:var(--hand);color:var(--muted);margin-top:.8rem;min-height:1.6em}
+
+/* ---------- QUIZ ---------- */
+.quiz{background:var(--paper);border-radius:18px;padding:1.6rem clamp(1rem,4vw,2.4rem) 2rem;box-shadow:0 14px 40px #8a2d5a26,0 2px 0 #e7a9bd;position:relative;
+  background-image:repeating-linear-gradient(0deg,transparent 0 35px,#f0b9ca44 35px 36px)}
+.quiz::before{content:"";position:absolute;left:clamp(14px,3vw,30px);top:0;bottom:0;border-left:2px solid #f2a0b9aa}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.6rem;padding-left:.6rem}
+.bar{height:10px;background:#f8d3df;border-radius:99px;overflow:hidden;margin-bottom:1.4rem;margin-left:.6rem}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--sage));border-radius:99px;transition:width .5s}
+.qcount{font-family:var(--hand);color:var(--muted);font-size:1.1rem}
+.qtext{font-family:var(--hand);font-weight:700;font-size:clamp(1.35rem,3.4vw,1.8rem);line-height:1.25;margin:0 0 1rem .6rem;min-height:2.6em}
+.opts{display:grid;gap:.7rem;margin-left:.6rem}
+.opt{display:flex;align-items:center;gap:.8rem;text-align:left;font:600 1rem var(--body);color:var(--ink);background:#fff;border:2px solid #f2b6c8;border-radius:14px;padding:.8rem 1rem;cursor:pointer;transition:transform .12s,border-color .12s,background .2s}
+.opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--rose)}
+.opt .k{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--hand);font-weight:700;background:var(--paper2);color:var(--rose-d)}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--okbg);border-color:var(--ok);color:#14502d}
+.opt.correct .k{background:var(--ok);color:#fff}
+.opt.wrong{background:var(--badbg);border-color:var(--bad);color:#7a1d25;animation:shake .4s}
+.opt.wrong .k{background:var(--bad);color:#fff}
+.opt.dim{opacity:.55}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{margin:1rem 0 0 .6rem;padding:.7rem 1rem;border-radius:12px;font-size:.95rem;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--okbg);color:#14502d}
+.fb.no{background:var(--badbg);color:#7a1d25}
+.qnav{margin:1.3rem 0 0 .6rem;display:flex;justify-content:flex-end}
+.result{text-align:center;padding:1rem .5rem 0 1rem}
+.grade{font-family:var(--hand);font-weight:700;font-size:clamp(4rem,14vw,7rem);line-height:1;color:var(--rose-d)}
+.grade small{font-size:.4em;color:var(--muted)}
+.msg{font-family:var(--hand);font-size:1.5rem;margin:.6rem auto 1.2rem;max-width:26ch;line-height:1.3}
+.stars{font-size:1.8rem;letter-spacing:.2rem;color:#f0b429}
+.review{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+[hidden]{display:none!important}
+footer{text-align:center;padding:1.5rem 1rem 3rem;font-family:var(--hand);color:var(--muted)}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99}
+@media (prefers-reduced-motion:reduce){.book,.leaf{transition-duration:.01s}.opt.wrong{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">✿ Jendouba, our green lung</div>
+  <nav><a href="#brochure">Booklet</a><a href="#quiz">Quiz</a></nav>
+</header>
+
+<section id="brochure" aria-labelledby="bt">
+  <h2 class="sec" id="bt">Our digital booklet</h2>
+  <p class="lead">Flip through our four-page paper booklet. Click a page, use the buttons, press the arrow keys, or swipe.</p>
+
+  <div class="stage" id="stage">
+    <div class="scaler" id="scaler">
+      <div class="book" id="book">
+
+        <!-- Leaf 2 (sits underneath): Things to Do / Back page -->
+        <div class="leaf" id="leaf2" style="z-index:2" data-leaf="2">
+          <div class="face front">
+            <h3 class="pt">Things to Do</h3>
+            <svg class="squig" viewBox="0 0 120 10"><path d="M2 5 Q12 0 22 5 T42 5 T62 5 T82 5 T102 5 T118 5" fill="none" stroke="#6fa586" stroke-width="3" stroke-linecap="round"/></svg>
+            <p>In Jendouba, you can have a great time. You can walk in the big green forests of Ain Draham and take nice pictures. You can also taste delicious traditional food, meet friendly local people, and enjoy the fresh air and quiet nature. It is a perfect place to relax and have fun with your family or friends.</p>
+            <ul class="todo"><li>Walk in the forest</li><li>Take nice pictures</li><li>Taste traditional food</li><li>Meet friendly people</li></ul>
+            <div class="pnum">– 3 –</div>
+          </div>
+          <div class="face back">
+            <h3 class="pt">Scan &amp; explore</h3>
+            <svg class="squig" viewBox="0 0 120 10"><path d="M2 5 Q12 0 22 5 T42 5 T62 5 T82 5 T102 5 T118 5" fill="none" stroke="#6fa586" stroke-width="3" stroke-linecap="round"/></svg>
+            <div class="qr"><svg id="qr" viewBox="0 0 21 21" width="100%" height="100%" shape-rendering="crispEdges" role="img" aria-label="QR code placeholder"></svg></div>
+            <div class="qrcap">QR code placeholder</div>
+            <h3 class="pt" style="font-size:1.5rem;margin-top:1rem">Our team</h3>
+            <ul class="team"><li>Ahmed Mtawaa</li><li>Youssef Ayachi</li><li>Youssef Zirawi</li><li>Taha Romdhani</li><li>Youssef Masmoudi</li></ul>
+            <div class="pnum">– 4 –</div>
+          </div>
+        </div>
+
+        <!-- Leaf 1 (on top): Cover / Nature & Geography -->
+        <div class="leaf" id="leaf1" style="z-index:3" data-leaf="1">
+          <div class="face front cover">
+            <h1>Discover<br>Jendouba</h1>
+            <p class="sub">A trip through the green lung of Tunisia</p>
+            <div class="photos">
+              <figure class="photo"><div class="img" id="img-ad"><svg viewBox="0 0 100 130" preserveAspectRatio="xMidYMax slice"><g fill="#5f9a78"><path d="M20 130V100L8 100 20 78 12 78 24 56 36 78 28 78 40 100 28 100V130z"/><path d="M60 130V90L46 90 60 64 52 64 68 38 84 64 76 64 90 90 76 90V130z"/></g><circle cx="78" cy="22" r="9" fill="#ffe7a3"/></svg></div><figcaption>Ain Draham</figcaption></figure>
+              <figure class="photo"><div class="img" id="img-jd"><svg viewBox="0 0 100 130" preserveAspectRatio="xMidYMax slice"><path d="M0 95Q25 75 50 92T100 80V130H0z" fill="#8cc3a1"/><path d="M0 112Q30 98 55 110T100 102V130H0z" fill="#5f9a78"/><circle cx="25" cy="25" r="9" fill="#ffe7a3"/></svg></div><figcaption>Jendouba</figcaption></figure>
+            </div>
+            <span class="hint">open ➜</span>
+          </div>
+          <div class="face back">
+            <h3 class="pt">Nature and Geography</h3>
+            <svg class="squig" viewBox="0 0 120 10"><path d="M2 5 Q12 0 22 5 T42 5 T62 5 T82 5 T102 5 T118 5" fill="none" stroke="#6fa586" stroke-width="3" stroke-linecap="round"/></svg>
+            <p>Jendouba is located in the northwest of Tunisia. It’s known as the country’s “green lung” because of its amazing landscapes, thick forests, and the fertile Medjerda Valley. One of the best places to visit there is Ain Draham, a mountain town famous for its cool weather, green trees, and beautiful scenery.</p>
+            <span class="tip">Northwest Tunisia · forests · Medjerda Valley</span>
+            <div class="pnum">– 2 –</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn ghost" id="prev" aria-label="Previous page">‹ Back</button>
+    <div class="dots" id="dots" role="tablist" aria-label="Booklet pages"></div>
+    <button class="btn" id="next" aria-label="Next page">Next ›</button>
+  </div>
+  <div class="label" id="label" aria-live="polite"></div>
+</section>
+
+<section id="quiz" aria-labelledby="qt">
+  <h2 class="sec" id="qt">Test your memory</h2>
+  <p class="lead">Five questions from the booklet. Each correct answer is worth 4 points, for a grade out of 20.</p>
+
+  <div class="quiz" id="quizBox">
+    <div id="qWrap">
+      <div class="qhead"><span class="qcount" id="qcount"></span><span class="qcount" id="qscore"></span></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="qtext" id="qtext"></div>
+      <div class="opts" id="opts"></div>
+      <div class="fb" id="fb" role="status"></div>
+      <div class="qnav"><button class="btn" id="qnext" hidden>Next question ›</button></div>
+    </div>
+    <div class="result" id="result" hidden>
+      <div class="stars" id="stars" aria-hidden="true"></div>
+      <div class="grade"><span id="gnum">0</span><small>/20</small></div>
+      <p class="msg" id="gmsg"></p>
+      <div class="review">
+        <button class="btn" id="retry">Try again</button>
+        <a class="btn ghost" href="#brochure" style="text-decoration:none" id="reread">Read the booklet</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Made with ♥ by the Jendouba team · English project</footer>
+<canvas id="confetti"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* ===== QR placeholder (decorative) ===== */
+(function(){
+  const svg=document.getElementById('qr');let h='<rect width="21" height="21" fill="#fff"/>';
+  const finder=(x,y)=>`<rect x="${x}" y="${y}" width="7" height="7" fill="#4a2434"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" fill="#d9587f"/>`;
+  let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;
+  for(let y=0;y<21;y++)for(let x=0;x<21;x++){
+    if((x<8&&y<8)||(x>12&&y<8)||(x<8&&y>12))continue;
+    if(rnd()>.52)h+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#4a2434"/>`;
+  }
+  svg.innerHTML=h+finder(0,0)+finder(14,0)+finder(0,14);
+})();
+
+/* ===== REAL QR CODE =====
+   Put the address of your deployed page here, e.g. 'https://yourname.github.io/jendouba/'.
+   If left empty, the QR uses this page's own address (works once the page is online). */
+const BOOKLET_URL='';
+(function(){
+  const url=BOOKLET_URL||location.href;
+  const cap=document.querySelector('.qrcap');
+  if(typeof qrcode==='undefined'||!/^https?:/i.test(url)){
+    cap.textContent='QR placeholder – set BOOKLET_URL once your page is online';return;
+  }
+  const qr=qrcode(0,'M');qr.addData(url);qr.make();
+  const n=qr.getModuleCount();let h='<rect width="'+n+'" height="'+n+'" fill="#fff"/>';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))h+='<rect x="'+c+'" y="'+r+'" width="1.02" height="1.02" fill="#2b1420"/>';
+  const svg=document.getElementById('qr');svg.setAttribute('viewBox','0 0 '+n+' '+n);svg.innerHTML=h;
+  svg.setAttribute('aria-label','QR code linking to '+url);
+  cap.textContent='Scan to open the booklet';
+})();
+
+/* ===== BOOKLET ===== */
+const P=340,H=480;
+const stage=document.getElementById('stage'),scaler=document.getElementById('scaler'),book=document.getElementById('book');
+const leaf1=document.getElementById('leaf1'),leaf2=document.getElementById('leaf2');
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),dotsEl=document.getElementById('dots'),labelEl=document.getElementById('label');
+// view: 0 cover, 1 Nature (left) [+Things on desktop], 2 Things (right, mobile only), 3 back page
+let view=0,mobile=false,tz=null;
+const names={0:'Cover',1:'Nature and Geography',2:'Things to Do',3:'Back page – team & QR'};
+const steps=()=>mobile?[0,1,2,3]:[0,1,3];
+const labelFor=v=>mobile?names[v]:(v===1?'Pages 2 & 3 – Nature and Geography · Things to Do':names[v]);
+
+function render(){
+  leaf1.classList.toggle('flipped',view>=1);
+  leaf2.classList.toggle('flipped',view>=3);
+  // z-order swaps mid-flip so stacked pages never overlap wrongly
+  clearTimeout(tz);
+  tz=setTimeout(()=>{leaf1.style.zIndex=view>=1?1:3;leaf2.style.zIndex=view>=3?4:2},450);
+  if(view<1)leaf1.style.zIndex=3;
+  if(view<3&&view>=1)leaf2.style.zIndex=2;
+  let tx=0;
+  if(view===0||(mobile&&view===2))tx=-P/2;
+  else if(view===3||(mobile&&view===1))tx=P/2;
+  book.style.transform=`translateX(${tx}px)`;
+  const st=steps(),i=st.indexOf(view);
+  prevB.disabled=i<=0;nextB.disabled=i>=st.length-1;
+  [...dotsEl.children].forEach((d,k)=>d.setAttribute('aria-current',k===i));
+  labelEl.textContent=labelFor(view);
+}
+function buildDots(){
+  dotsEl.innerHTML='';
+  steps().forEach((v,k)=>{const b=document.createElement('button');b.setAttribute('aria-label',labelFor(v));b.onclick=()=>{view=v;render()};dotsEl.appendChild(b)});
+}
+function move(d){const st=steps(),i=Math.max(0,Math.min(st.length-1,st.indexOf(view)+d));view=st[i];render()}
+prevB.onclick=()=>move(-1);nextB.onclick=()=>move(1);
+leaf1.onclick=()=>move(view>=1?-1:1);
+leaf2.onclick=()=>{ if(view>=3)move(-1); else if(view>=1)move(1)};
+// page clicks: left page goes back, right page goes forward
+leaf1.addEventListener('click',e=>{e.stopImmediatePropagation();view>=1?(view=0,render()):move(1)},true);
+leaf2.addEventListener('click',e=>{e.stopImmediatePropagation();if(view>=3){view=1;if(mobile)view=2;render()}else if(view>=1)move(1)},true);
+document.addEventListener('keydown',e=>{
+  if(e.target.closest&&e.target.closest('#quizBox'))return;
+  if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
+let sx=null;
+stage.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+stage.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45)move(dx<0?1:-1);sx=null});
+
+function fit(){
+  const w=stage.clientWidth,wasMobile=mobile;
+  mobile=w<720;
+  if(mobile!==wasMobile||!dotsEl.children.length){
+    if(!mobile&&view===2)view=1;
+    buildDots();render();
+  }
+  const s=Math.min(1,(w-16)/(mobile?P:2*P));
+  scaler.style.transform=`scale(${s})`;
+  stage.style.height=(H*s+50)+'px';
+}
+addEventListener('resize',fit);fit();
+
+/* ===== QUIZ ===== */
+const QS=[
+ {q:'Where is Jendouba located in Tunisia?',o:['In the northwest','In the south, near the desert','On the east coast','On an island'],a:0,e:'Jendouba is in the northwest of Tunisia.'},
+ {q:'Why is Jendouba called the country’s “green lung”?',o:['Because of its big lakes','Because of its landscapes, thick forests and fertile valley','Because of its big factories','Because it has many parks in the city'],a:1,e:'The booklet says it is a “green lung” thanks to its landscapes, thick forests, and the fertile Medjerda Valley.'},
+ {q:'Which fertile valley is found in Jendouba?',o:['Nile Valley','Tafna Valley','Medjerda Valley','Rhône Valley'],a:2,e:'The fertile Medjerda Valley is one of Jendouba’s treasures.'},
+ {q:'What is Ain Draham famous for?',o:['Hot weather and sandy beaches','Cool weather, green trees and beautiful scenery','Skyscrapers and busy streets','Salt lakes'],a:1,e:'Ain Draham is a mountain town famous for its cool weather, green trees and beautiful scenery.'},
+ {q:'Which activity does the booklet suggest in Jendouba?',o:['Surfing in the sea','Shopping in big malls','Walking in the forests of Ain Draham','Riding camels in the desert'],a:2,e:'You can walk in the big green forests of Ain Draham and take nice pictures.'}
+];
+const $=id=>document.getElementById(id);
+let qi=0,score=0,locked=false;
+function showQ(){
+  locked=false;const Q=QS[qi];
+  $('qcount').textContent=`Question ${qi+1} of ${QS.length}`;
+  $('qscore').textContent=`Score: ${score*4}/20`;
+  $('bar').style.width=(qi/QS.length*100)+'%';
+  $('qtext').textContent=Q.q;
+  $('fb').className='fb';$('fb').textContent='';$('qnext').hidden=true;
+  $('opts').innerHTML='';
+  Q.o.forEach((t,i)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="k">${'ABCD'[i]}</span><span></span>`;b.lastChild.textContent=t;
+    b.onclick=()=>answer(i);$('opts').appendChild(b);
+  });
+}
+function answer(i){
+  if(locked)return;locked=true;
+  const Q=QS[qi],bs=[...$('opts').children];
+  bs.forEach((b,k)=>{b.disabled=true;if(k===Q.a)b.classList.add('correct');else if(k===i)b.classList.add('wrong');else b.classList.add('dim')});
+  const ok=i===Q.a;if(ok)score++;
+  $('qscore').textContent=`Score: ${score*4}/20`;
+  const fb=$('fb');fb.className='fb show '+(ok?'ok':'no');
+  fb.textContent=(ok?'Correct! ':'Not quite. ')+Q.e;
+  $('qnext').textContent=qi===QS.length-1?'See my grade ›':'Next question ›';
+  $('qnext').hidden=false;$('qnext').focus({preventScroll:true});
+}
+$('qnext').onclick=()=>{qi++;qi<QS.length?showQ():finish()};
+function finish(){
+  $('qWrap').hidden=true;$('result').hidden=false;$('bar').style.width='100%';
+  const g=score*4;
+  const m=g===20?'Perfect score! You’re a true Jendouba expert!':g>=16?'Great job! You know Jendouba very well.':g>=12?'Good work! Read the booklet once more to reach 20.':g>=8?'Nice try! A second look at the booklet will help.':'Keep exploring! Flip through the booklet and try again.';
+  $('gmsg').textContent=m;$('stars').textContent='★'.repeat(Math.round(g/4))+'☆'.repeat(5-Math.round(g/4));
+  let n=0;const t=setInterval(()=>{$('gnum').textContent=n;if(n>=g)clearInterval(t);n++},70);
+  confetti(g>=12?220:90);
+}
+$('retry').onclick=()=>{qi=0;score=0;$('result').hidden=true;$('qWrap').hidden=false;showQ()};
+showQ();
+
+/* ===== CONFETTI ===== */
+function confetti(count){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const c=$('confetti'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+  const cols=['#d9587f','#f6a5c0','#6fa586','#f0b429','#ffffff','#b93d65'];
+  const ps=Array.from({length:count},()=>({x:innerWidth/2+(Math.random()-.5)*200,y:innerHeight*.55,vx:(Math.random()-.5)*16,vy:-Math.random()*17-4,r:Math.random()*7+4,rot:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.random()*cols.length|0]}));
+  let f=0;(function tick(){
+    x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{p.vy+=.35;p.vx*=.992;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/3,p.r,p.r*.6);x.restore()});
+    if(++f<260)requestAnimationFrame(tick);else x.clearRect(0,0,c.width,c.height);
+  })();
+}
+</script>
+</body>
+</html>
